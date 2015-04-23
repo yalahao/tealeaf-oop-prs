@@ -41,6 +41,7 @@ class Human < Player
   attr_accessor :name
 
   def initialize
+    system 'clear'
     puts "Hello, what is your name?"
     @name = gets.chomp
     super
@@ -82,15 +83,15 @@ class Game
     puts ">> Round #{num_of_rounds}"
     human.pick_hand
     computer.pick_hand
-    compare(human.hand, computer.hand)
+    compare_hands
     show_scores
     start_new_round_or_quit
   end
 
-  def compare(hand1, hand2)
-    if hand1 == hand2
+  def compare_hands
+    if human.hand == computer.hand
       puts "It's a draw!"
-    elsif (hand1 == 'p' && hand2 == 'r') || (hand1 == 's' && hand2 == 'p') || (hand1 == 'r' && hand2 == 's')
+    elsif (human.hand == 'p' && computer.hand == 'r') || (human.hand == 's' && computer.hand == 'p') || (human.hand == 'r' && computer.hand == 's')
       puts "#{human.name} won!"
       human.win
     else
