@@ -24,22 +24,26 @@ Game
 
 
 class Player
-
+  attr_accessor :score, :hand
   HANDS = { "p" => "paper", "r" => "rock", "s" => "scissors"}
+
+  def initialize
+    @score = 0
+  end
+
   def win
     self.score += 1
   end
 end
 
 
-class Human
-  attr_accessor :name, :score, :hand
-  include Winnable
+class Human < Player
+  attr_accessor :name
 
   def initialize
     puts "Hello, what is your name?"
     @name = gets.chomp
-    @score = 0
+    super
   end
 
   def pick_hand
@@ -55,13 +59,7 @@ class Human
   end
 end
 
-class Computer
-  include Winnable
-
-  def initialize
-    @score = 0
-  end
-
+class Computer < Player
   def pick_hand
     choice = %w{p r s}.sample
     puts "Computer picked #{HANDS[choice]}"
