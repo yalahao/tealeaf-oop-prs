@@ -1,28 +1,3 @@
-# Architecture
-=begin
-
-Human
-  @name
-  @score
-  move
-
-Computer < Human
-  move
-
-
-Round(Human, Human)
-  @winner
-  start
-
-Game
-  @Humans
-  @number_of_rounds
-  start
-
-=end
-
-
-
 class Player
   attr_accessor :score, :hand
   HANDS = { "p" => "paper", "r" => "rock", "s" => "scissors"}
