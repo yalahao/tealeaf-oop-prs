@@ -1,37 +1,39 @@
 # Architecture
 =begin
 
-Player
+Human
   @name
   @score
   move
 
-Computer < Player
+Computer < Human
   move
 
 
-Round(player, player)
+Round(Human, Human)
   @winner
   start
 
 Game
-  @players
+  @Humans
   @number_of_rounds
   start
 
 =end
 
-MOVES = { "p" => "paper", "r" => "rock", "s" => "scissors"}
 
-module Winnable
+
+class Player
+
+  HANDS = { "p" => "paper", "r" => "rock", "s" => "scissors"}
   def win
     self.score += 1
   end
 end
 
 
-class Player
-  attr_accessor :name, :score
+class Human
+  attr_accessor :name, :score, :hand
   include Winnable
 
   def initialize
@@ -40,39 +42,38 @@ class Player
     @score = 0
   end
 
-  def move
-    puts "Choose your play: (P/R/S)"
+  def pick_hand
+    puts "#{name}, pick your hand: (P/R/S)"
     choice = gets.chomp.downcase
     if %w{p r s}.include?(choice)
-      puts "#{name} chose #{MOVES[choice]}"
-      return choice
+      puts "#{name} picked #{HANDS[choice]}"
+      @hand = choice
     else
       puts "Invalid choice. Try again. "
-      move
+      pick_hand
     end
   end
 end
 
 class Computer
-  attr_accessor :score
   include Winnable
 
   def initialize
     @score = 0
   end
 
-  def move
+  def pick_hand
     choice = %w{p r s}.sample
-    puts "Computer chose #{MOVES[choice]}"
-    return choice
+    puts "Computer picked #{HANDS[choice]}"
+    @hand = choice
   end
 end
 
 class Game
-  attr_accessor :player, :computer, :num_of_rounds
+  attr_accessor :human, :computer, :num_of_rounds
 
   def initialize
-    @player = Player.new
+    @human = Human.new
     @computer = Computer.new
     @num_of_rounds = 0
   end
@@ -81,46 +82,28 @@ class Game
     system 'clear'
     @num_of_rounds += 1
     puts ">> Round #{num_of_rounds}"
-    check_winner(player.move, computer.move )
+    human.pick_hand
+    computer.pick_hand
+    compare(human.hand, computer.hand)
     show_scores
     start_new_round_or_quit
   end
 
-  def check_winner(choice1, choice2)
-    win = "#{player.name} won!"
-    lose = "#{player.name} lose..."
-    paper = "Paper wraps rock."
-    scissors = "Scissors cut paper."
-    rock = "Rock breaks scissors."
-
-    if choice1 == choice2
+  def compare(hand1, hand2)
+    if hand1 == hand2
       puts "It's a draw!"
-    elsif (choice1 == 'p' && choice2 == 'r')
-      puts "#{paper} #{win}"
-      player.win
-    elsif (choice1 == 'r' && choice2 == 'p')
-      puts "#{paper} #{lose}"
-      computer.win
-    elsif (choice1 == 'p' && choice2 == 's')
-      puts "#{scissors} #{lose}"
-      computer.win
-    elsif (choice1 == 's' && choice2 == 'p')
-      puts "#{scissors} #{win}"
-      player.win
-    elsif (choice1 == 'r' && choice2 == 's')
-      puts "#{rock} #{win}"
-      player.win
-    elsif (choice1 == 's' && choice2 == 'r')
-      puts "#{rock} #{lose}"
-      computer.win
+    elsif (hand1 == 'p' && hand2 == 'r') || (hand1 == 's' && hand2 == 'p') || (hand1 == 'r' && hand2 == 's')
+      puts "#{human.name} won!"
+      human.win
     else
-      say "Something went wrong. Restart the game and make sure you choose the valid options."
+      puts "#{human.name} lose..."
+      computer.win
     end
   end
 
   def show_scores
     puts "-------------------------------------------"
-    puts "#{player.name}'s score is: #{player.score}."
+    puts "#{human.name}'s score is: #{human.score}."
     puts "Computer's score is: #{computer.score}"
     puts "-------------------------------------------"
   end
@@ -130,7 +113,7 @@ class Game
     choice = gets.chomp.downcase
     start_new_round_or_quit unless %w{y n}.include?(choice)
     return new_round if choice == 'y'
-    puts "Till next time!" if choice == 'n'
+    puts "#{human.name}, see you next time!" if choice == 'n'
   end
 end
 
