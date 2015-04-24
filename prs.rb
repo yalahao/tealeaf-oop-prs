@@ -11,7 +11,6 @@ class Player
   end
 end
 
-
 class Human < Player
   attr_accessor :name
 
@@ -85,9 +84,14 @@ class Game
   def start_new_round_or_quit
     puts "Play again? (Y/N)"
     choice = gets.chomp.downcase
-    start_new_round_or_quit unless %w{y n}.include?(choice)
-    return new_round if choice == 'y'
-    puts "#{human.name}, see you next time!" if choice == 'n'
+    if choice == 'y'
+      return new_round
+    elsif choice == 'n'
+      puts "#{human.name}, see you next time!"
+    else
+      puts "Invalid choice. Try again."
+      start_new_round_or_quit
+    end
   end
 end
 
