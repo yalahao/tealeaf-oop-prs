@@ -65,7 +65,9 @@ class Game
   def compare_hands
     if human.hand == computer.hand
       puts "It's a draw!"
-    elsif (human.hand == 'p' && computer.hand == 'r') || (human.hand == 's' && computer.hand == 'p') || (human.hand == 'r' && computer.hand == 's')
+    elsif (human.hand == 'p' && computer.hand == 'r') ||
+      (human.hand == 's' && computer.hand == 'p') ||
+      (human.hand == 'r' && computer.hand == 's')
       puts "#{human.name} won!"
       human.win
     else
